@@ -12,15 +12,32 @@
 import subprocess
 import os
 import json
-# import twistlock.serverless
+import twistlock.serverless
 
-# @twistlock.serverless.handler
+@twistlock.serverless.handler
+
 def lambda_handler(event, context):
+#    print('## ENVIRONMENT VARIABLES')
+#    print(os.environ)
+#    print('## EVENT')
+#    print(event)
     cmd = "echo Hello world"
-    if "cmd" in event:
+    if "body" in event:
+        # Using curl and the body is part of a much larger event json
+        eventbody = json.loads(event["body"])
+#        print('## EVENT BODY')
+#        print(eventbody)       
+        cmd = eventbody["cmd"]
+#        print('## SETTING CMD FROM BODY')
+#        print(cmd)
+    elif "cmd" in event:
+        # Using Lamdba Test tab and event contains only the body json
         cmd = event["cmd"]
-
+#        print('## SETTING CMD FROM EVENT')
+#        print(cmd)
     try:
+#        print('## Using cmd')
+#        print(cmd)    
         result =  subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE).stdout
         out =  result.read()
         out = out.decode("utf8")
@@ -35,3 +52,4 @@ def lambda_handler(event, context):
     }
 
     return response
+
