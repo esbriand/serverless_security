@@ -25,19 +25,22 @@ def lambda_handler(event, context):
     if "body" in event:
         # Using curl and the body is part of a much larger event json
         eventbody = json.loads(event["body"])
-#        print('## EVENT BODY')
-#        print(eventbody)       
-        cmd = eventbody["cmd"]
-#        print('## SETTING CMD FROM BODY')
-#        print(cmd)
+#       print('## EVENT BODY')
+#       print(eventbody)
+        if "body" in eventbody:
+            cmd = eventbody["body"]
+        else:
+            cmd = eventbody["cmd"]
+#       print('## SETTING CMD FROM BODY')
+#       print(cmd)
     elif "cmd" in event:
         # Using Lamdba Test tab and event contains only the body json
         cmd = event["cmd"]
-#        print('## SETTING CMD FROM EVENT')
-#        print(cmd)
+#       print('## SETTING CMD FROM EVENT')
+#       print(cmd)
     try:
-#        print('## Using cmd')
-#        print(cmd)    
+#       print('## Using cmd')
+#       print(cmd)    
         result =  subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE).stdout
         out =  result.read()
         out = out.decode("utf8")
